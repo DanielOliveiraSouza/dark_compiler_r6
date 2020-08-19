@@ -1,7 +1,5 @@
 #!/bin/bash
-rm teste.exe;
-rm teste.o;
-rm teste.exe;
+rm *.{o,exe}
 make
 #for i in $(ls *.txt ) do 
 ./sintatico.exe input  teste.asm 
