@@ -1,0 +1,14 @@
+inteiro x;
+inteiro y;
+string z;
+
+{ 
+	x = 4 + 2 * 3;
+	y = 2 * 3 + 4;
+	escreva x;
+	escreva y;
+	leia z;
+	escreva z;
+	
+	
+}

@@ -1,0 +1,8 @@
+inteiro valor;
+inteiro id;
+string str;
+{
+	escreva valor;
+	escreva id;
+	escreva str;
+}
