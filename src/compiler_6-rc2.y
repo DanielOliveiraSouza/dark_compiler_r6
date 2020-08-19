@@ -7,6 +7,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/types.h>
+#include <sys/wait.h>
+#include <unistd.h>
+#include <wordexp.h>
 #include "compiler_6_rc2_types.h"
 // declaração da tabela de simbolos
 type_symbol_table  *symbl = NULL;
@@ -511,18 +515,60 @@ void Generate_string_format(int type_flag){
 	}
 }
 		
+
+void  CreateProcess(char *  input){
+	int status;
+	status = 0;
+	pid_t pid;
+	wordexp_t str;
+	char ** command;
+	wordexp(input,&str,0);
+	command = str.we_wordv;
+	//for (int i =0 ; i < str.we_wordc;i++)
+	//	printf("%s\n",str.we_wordv[i]);
+	pid = fork ();
+		if ( pid < 0 ){
+			printf("não foi possivel criar o processo %s\n",command[0]);
+			exit(1);
+		}
 		
-		
-		
+		if ( pid == 0 ){
+			//printf("my process pid %d  command %s\n",pid,command[0]);
+			execvp(command[0],command)	;
 			
+		}else{
+			//printf("processo %d criado, aguardando conclusão\n",pid);
+			waitpid(pid,&status,0);
+		}
+}
+
+void GenBinary(char * output_asm){
+	char cmd[FULL_STR];
+	
+	strcpy(cmd,"");
+	strcat(cmd,"nasm ");
+	strcat(cmd,"-felf64 ");
+	strcat(cmd,output_asm);
+	strcat(cmd," -o " );
+	strcat(cmd,"output.o ");
+	CreateProcess(cmd);
+	strcpy(cmd,"");
+	strcat(cmd,"gcc ");
+	strcat(cmd,"output.o ");
+	strcat(cmd," -o " );
+	strcat(cmd,"output.exe ");
+	strcat(cmd,"-no-pie");
+	CreateProcess(cmd);
+}
 int main(int argc, char ** argv) {
 	//yyin = fopen(argv[1],"r");
 	//while (yytext != EOF ){
 		//yylex();
-		
 	FILE *fp;
 	fp = NULL;
 	yyin = fopen(argv[1],"r");
+	char cmd[FULL_STR];
+	cmd[0]='\0';
 	if (yyin != NULL ){
 
 		strcpy(str_code,""); // inicialiando  o buffer de codigo
@@ -551,6 +597,9 @@ int main(int argc, char ** argv) {
 		}
 		fclose(yyin);
 		yyin= NULL;
+		GenBinary(argv[2]);
+	
+		
 	}else
 		printf("ERRO FATAL:O arquivo '%s', não foi encontrado ou não pode ser aberto\n",argv[1]);
     return 0; 

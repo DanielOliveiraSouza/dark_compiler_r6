@@ -1,3 +1,9 @@
-inteiro x {
-	x = 1 +2 * 3
+inteiro x; 
+inteiro y;
+{
+	x = 1 + 2 * 3;
+	y = 2 * 3 + 1;
+	escreva x;
+	escreva y;
+	
 }

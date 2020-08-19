@@ -1,7 +1,7 @@
 
 #ifndef COMPILER_6_RC2_TYPES_H_
 	#define COMPILER_6_RC2_TYPES_H_
-	#define FULL_STR 2048
+	#define FULL_STR 4096
 	#define FULL_ID 64
 
 
@@ -42,6 +42,7 @@
 	void Generate_string_format(int type_flag);
 	//void Generate_string_format(char *label_id);
 	int Generate_section_text(int flag);
+	void  CreateProcess(char * input);
 
 	
 	void yyerror(char *);

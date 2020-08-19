@@ -85,7 +85,7 @@ extern int yydebug;
 
 union YYSTYPE
 {
-#line 36 "src/compiler_6-rc2.y" /* yacc.c:1909  */
+#line 40 "src/compiler_6-rc2.y" /* yacc.c:1909  */
 
 	int inteiro;
 	char string[2048];
