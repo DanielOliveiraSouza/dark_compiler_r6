@@ -24,7 +24,7 @@ debugc99:
 	 gcc src/lex.yy.c  src/y.tab.c -o dark_cc.exe -I include/ -std=c99 -g
 	 
 clean:
-	rm src/y.tab.c src/lex.yy.c *.o *.exe *.asm  -v 
+	rm src/y.tab.c src/y.tab.h src/lex.yy.c *.o *.exe *.asm 
 	 
 
 	

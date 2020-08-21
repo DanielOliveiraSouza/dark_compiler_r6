@@ -527,19 +527,19 @@ void  CreateProcess(char *  input){
 	//for (int i =0 ; i < str.we_wordc;i++)
 	//	printf("%s\n",str.we_wordv[i]);
 	pid = fork ();
-		if ( pid < 0 ){
-			printf("não foi possivel criar o processo %s\n",command[0]);
-			exit(1);
-		}
+	if ( pid < 0 ){
+		printf("não foi possivel criar o processo %s\n",command[0]);
+		exit(1);
+	}
 		
-		if ( pid == 0 ){
-			//printf("my process pid %d  command %s\n",pid,command[0]);
-			execvp(command[0],command)	;
-			
-		}else{
-			//printf("processo %d criado, aguardando conclusão\n",pid);
-			waitpid(pid,&status,0);
-		}
+	if ( pid == 0 )
+		execvp(command[0],command)	;
+	else
+		waitpid(pid,&status,0);
+		
+	wordfree(&str);
+	
+
 }
 void GenCommandStr(char * filename, char *nasm_cmd, char *gcc_cmd){
 	if ( ( gcc_cmd == NULL )|| ( nasm_cmd == NULL ) ) {
