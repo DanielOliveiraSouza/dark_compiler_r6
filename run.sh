@@ -3,7 +3,7 @@ rm *.{o,exe}
 make
 #for i in $(ls *.txt ) do 
 ./dark_cc.exe testes/input  teste.asm 
-./output.exe
+./teste.asm.exe
 ./dark_cc.exe testes/input-2.txt teste2.asm
-./output.exe
+./teste2.asm.exe
 

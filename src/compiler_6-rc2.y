@@ -541,25 +541,36 @@ void  CreateProcess(char *  input){
 			waitpid(pid,&status,0);
 		}
 }
-
-void GenBinary(char * output_asm){
-	char cmd[FULL_STR];
+void GenCommandStr(char * filename, char *nasm_cmd, char *gcc_cmd){
+	if ( ( gcc_cmd == NULL )|| ( nasm_cmd == NULL ) ) {
+		printf("gcc_cmd or nasm_cmd can't be NULL");
+		exit(1);
+	}
+	char file_output[FULL_STR];
 	
-	strcpy(cmd,"");
-	strcat(cmd,"nasm ");
-	strcat(cmd,"-felf64 ");
-	strcat(cmd,output_asm);
-	strcat(cmd," -o " );
-	strcat(cmd,"output.o ");
-	CreateProcess(cmd);
-	strcpy(cmd,"");
-	strcat(cmd,"gcc ");
-	strcat(cmd,"output.o ");
-	strcat(cmd," -o " );
-	strcat(cmd,"output.exe ");
-	strcat(cmd,"-no-pie");
-	CreateProcess(cmd);
+	
+	strcpy(file_output,filename);
+	strcat(file_output,".o");
+	strcpy(nasm_cmd,"");
+	strcat(nasm_cmd,"nasm ");
+	strcat(nasm_cmd,"-felf64 ");
+	strcat(nasm_cmd,filename);
+	strcat(nasm_cmd," -o " );
+	strcat(nasm_cmd,file_output);
+	
+	
+	strcpy(gcc_cmd,"");
+	strcat(gcc_cmd,"gcc ");
+	strcat(gcc_cmd,file_output);
+	strcat(gcc_cmd," -o " );
+	strcpy(file_output,filename);
+	strcat(file_output,".exe");
+	strcat(gcc_cmd,file_output);
+	strcat(gcc_cmd,"  -no-pie");
+	
+	printf("nasm_cmd=%s\ngcc_cmd=%s\n",nasm_cmd,gcc_cmd);
 }
+
 int main(int argc, char ** argv) {
 	//yyin = fopen(argv[1],"r");
 	//while (yytext != EOF ){
@@ -567,8 +578,8 @@ int main(int argc, char ** argv) {
 	FILE *fp;
 	fp = NULL;
 	yyin = fopen(argv[1],"r");
-	char cmd[FULL_STR];
-	cmd[0]='\0';
+	char gcc_cmd[FULL_STR];
+	char nasm_cmd[FULL_STR];
 	if (yyin != NULL ){
 
 		strcpy(str_code,""); // inicialiando  o buffer de codigo
@@ -597,8 +608,9 @@ int main(int argc, char ** argv) {
 		}
 		fclose(yyin);
 		yyin= NULL;
-		GenBinary(argv[2]);
-	
+		GenCommandStr(argv[2],nasm_cmd,gcc_cmd);
+		CreateProcess(nasm_cmd);
+		CreateProcess(gcc_cmd);
 		
 	}else
 		printf("ERRO FATAL:O arquivo '%s', não foi encontrado ou não pode ser aberto\n",argv[1]);

@@ -43,6 +43,7 @@
 	//void Generate_string_format(char *label_id);
 	int Generate_section_text(int flag);
 	void  CreateProcess(char * input);
+	void GenCommandStr(char * filename, char *nasm_cmd, char *gcc_cmd);
 
 	
 	void yyerror(char *);
