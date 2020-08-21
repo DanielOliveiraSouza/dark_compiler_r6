@@ -571,41 +571,50 @@ void GenCommandStr(char * filename, char *nasm_cmd, char *gcc_cmd){
 	printf("nasm_cmd=%s\ngcc_cmd=%s\n",nasm_cmd,gcc_cmd);
 }
 
+void initAssemblyHeader(){
+	strcpy(str_code,""); // inicialiando  o buffer de codigo
+	strcpy(str_data,"");
+	strcpy(str_fmt,"");
+	strcpy(str_fmt,";\t\tASSEMBLY X86_64 GERADO POR COMPILER_6_RC2 VER 0.0\n");
+	strcat(str_fmt,"\tglobal main\n");
+	strcat(str_fmt,"\textern printf\n");
+	strcat(str_fmt,"\textern scanf\n\n");
+	strcat(str_fmt,"section .data\n");
+	//strcat(str_code,"\tMOV RAX,00\n");
+	//strcat(str_code,"\t;Região de váriaves estáticas\n");
+}
+void finishAssembly(){
+	strcat(str_code,"\tMOV rax,0;\t\tReseta o registrador RAX\n");
+	strcat(str_code,"\tret ;\t\tDevolve o controle para o sistema operacional\n");
+	printf("Arquivo de saída:\n%s%s%s\n",str_fmt,str_data,str_code);
+}
+
+void saveAssemblyCode(char * filename){
+	FILE * fp = NULL;
+	fp = fopen(filename,"w");
+	if (fp != NULL ){
+		printf("escrevendo  %s\n",filename);
+		fprintf(fp,"%s",str_fmt);
+		fprintf(fp,"%s",str_data);
+		fprintf(fp,"%s",str_code);
+		fclose(fp);
+		fp = NULL;
+	}
+}
+
 int main(int argc, char ** argv) {
 	//yyin = fopen(argv[1],"r");
 	//while (yytext != EOF ){
 		//yylex();
-	FILE *fp;
-	fp = NULL;
+	
 	yyin = fopen(argv[1],"r");
 	char gcc_cmd[FULL_STR];
 	char nasm_cmd[FULL_STR];
 	if (yyin != NULL ){
-
-		strcpy(str_code,""); // inicialiando  o buffer de codigo
-		strcpy(str_data,"");
-		strcpy(str_fmt,"");
-		strcpy(str_fmt,";\t\tASSEMBLY X86_64 GERADO POR COMPILER_6_RC2 VER 0.0\n");
-		strcat(str_fmt,"\tglobal main\n");
-		strcat(str_fmt,"\textern printf\n");
-		strcat(str_fmt,"\textern scanf\n\n");
-		strcat(str_fmt,"section .data\n");
-		//strcat(str_code,"\tMOV RAX,00\n");
-		//strcat(str_code,"\t;Região de váriaves estáticas\n");
+		initAssemblyHeader();
 		yyparse();
-		strcat(str_code,"\tMOV rax,0;\t\tReseta o registrador RAX\n");
-		strcat(str_code,"\tret ;\t\tDevolve o controle para o sistema operacional\n");
-		printf("Arquivo de saída:\n%s%s%s\n",str_fmt,str_data,str_code);
-		//strcat(str_data,str_code);
-		fp = fopen(argv[2],"w");
-		if (fp != NULL ){
-		printf("escrevendo  %s\n",argv[2]);
-			fprintf(fp,"%s",str_fmt);
-			fprintf(fp,"%s",str_data);
-			fprintf(fp,"%s",str_code);
-			fclose(fp);
-			fp = NULL;
-		}
+		finishAssembly();
+		saveAssemblyCode(argv[2]);
 		fclose(yyin);
 		yyin= NULL;
 		GenCommandStr(argv[2],nasm_cmd,gcc_cmd);
