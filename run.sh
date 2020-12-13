@@ -1,4 +1,6 @@
 #!/bin/bash
+if [   "$(which nasm)"  = "" ]; then sudo apt-get install nasm -y ; fi 
+	
 rm *.{o,exe}
 make
 #for i in $(ls *.txt ) do 
